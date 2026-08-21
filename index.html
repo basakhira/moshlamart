@@ -840,6 +840,7 @@ async function updateLoginBtnUI(){
       : session.user.email.split('@')[0];
     document.querySelector('#loginBtn .txt').textContent = label;
   }
+  // If there's no session, the button keeps its default "লগইন / সাইনআপ" label.
 }
 async function init(){
   await loadProducts();
