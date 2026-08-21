@@ -715,7 +715,7 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
   </div>
   <div class="admin-wrap" id="adminContent" style="display:none;">
     <div class="admin-form">
-      <h3>➕ নতুন প্রোডাক্ট যোগ করুন</h3>
+      <h3 id="formTitle">➕ নতুন প্রোডাক্ট যোগ করুন</h3>
       <div class="field">
         <label>প্রোডাক্টের ছবি</label>
         <div class="img-drop" id="imgDrop">
@@ -735,7 +735,12 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
       <div class="field"><label>দাম (৳)</label><input type="number" id="pPrice" placeholder="২৫০"></div>
       <div class="field"><label>ওজন / ইউনিট</label><input type="text" id="pUnit" placeholder="২০০ গ্রাম"></div>
       <div class="field"><label>বিবরণ</label><textarea id="pDesc" rows="3" placeholder="সংক্ষিপ্ত বিবরণ লিখুন"></textarea></div>
+      <div class="field" style="display:flex; align-items:center; gap:8px;">
+        <input type="checkbox" id="pIsNew" style="width:18px; height:18px;">
+        <label for="pIsNew" style="margin:0;">"নতুন" ব্যাজ দেখাবে</label>
+      </div>
       <button class="btn btn-primary" style="width:100%; justify-content:center;" id="addProductBtn">প্রোডাক্ট যোগ করুন</button>
+      <button class="btn btn-outline" style="width:100%; justify-content:center; margin-top:8px; display:none;" id="cancelEditBtn">✕ এডিট বাতিল করুন</button>
     </div>
     <div>
       <h3 style="font-family:'Fraunces',serif; color:var(--brown); margin-bottom:16px;">📦 সব প্রোডাক্ট (<span id="adminCount">0</span>)</h3>
@@ -1097,31 +1102,73 @@ document.getElementById('imgFileInput').addEventListener('change', (e)=>{
   reader.readAsDataURL(file);
 });
 
+let editingProductId = null;
+
+function resetForm(){
+  editingProductId = null;
+  document.getElementById('formTitle').textContent = '➕ নতুন প্রোডাক্ট যোগ করুন';
+  document.getElementById('addProductBtn').textContent = 'প্রোডাক্ট যোগ করুন';
+  document.getElementById('cancelEditBtn').style.display = 'none';
+  document.getElementById('pName').value='';
+  document.getElementById('pCat').value='গুঁড়া মসলা';
+  document.getElementById('pPrice').value='';
+  document.getElementById('pUnit').value='';
+  document.getElementById('pDesc').value='';
+  document.getElementById('pIsNew').checked = false;
+  uploadedImgData = null;
+  document.getElementById('imgPreviewWrap').innerHTML = '📷 <br>ছবি আপলোড করতে ক্লিক করুন';
+}
+
+function startEdit(p){
+  editingProductId = p.id;
+  document.getElementById('formTitle').textContent = '✏️ প্রোডাক্ট এডিট করুন';
+  document.getElementById('addProductBtn').textContent = 'আপডেট করুন';
+  document.getElementById('cancelEditBtn').style.display = 'block';
+  document.getElementById('pName').value = p.name;
+  document.getElementById('pCat').value = p.cat;
+  document.getElementById('pPrice').value = p.price;
+  document.getElementById('pUnit').value = p.unit;
+  document.getElementById('pDesc').value = p.desc;
+  document.getElementById('pIsNew').checked = !!p.isNew;
+  uploadedImgData = p.img || null;
+  document.getElementById('imgPreviewWrap').innerHTML = p.img
+    ? `<img src="${p.img}"><br>ছবি নির্বাচিত হয়েছে ✅ (পরিবর্তন করতে আবার ক্লিক করুন)`
+    : '📷 <br>ছবি আপলোড করতে ক্লিক করুন';
+  document.querySelector('.admin-form').scrollIntoView({behavior:'smooth'});
+}
+
+document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
+
 document.getElementById('addProductBtn').addEventListener('click', async ()=>{
   const name = document.getElementById('pName').value.trim();
   const cat = document.getElementById('pCat').value;
   const price = parseFloat(document.getElementById('pPrice').value);
   const unit = document.getElementById('pUnit').value.trim();
   const desc = document.getElementById('pDesc').value.trim();
+  const isNew = document.getElementById('pIsNew').checked;
   if(!name || !price){ showToast('⚠️ নাম ও দাম অবশ্যই দিতে হবে।'); return; }
-  const newProduct = {
-    id: 'p'+Date.now(),
-    name, cat, price, unit: unit||'পিস', desc_text: desc, emoji:'🌿',
-    img: uploadedImgData, is_new:true
-  };
-  const { error } = await sb.from('products').insert(newProduct);
-  if(error){ showToast('❌ প্রোডাক্ট যোগ করতে সমস্যা হয়েছে।'); console.error(error); return; }
+
+  if(editingProductId){
+    const updates = { name, cat, price, unit: unit||'পিস', desc_text: desc, img: uploadedImgData, is_new: isNew };
+    const { error } = await sb.from('products').update(updates).eq('id', editingProductId);
+    if(error){ showToast('❌ আপডেট করতে সমস্যা হয়েছে।'); console.error(error); return; }
+    showToast('✅ প্রোডাক্ট সফলভাবে আপডেট হয়েছে!');
+  } else {
+    const newProduct = {
+      id: 'p'+Date.now(),
+      name, cat, price, unit: unit||'পিস', desc_text: desc, emoji:'🌿',
+      img: uploadedImgData, is_new: isNew
+    };
+    const { error } = await sb.from('products').insert(newProduct);
+    if(error){ showToast('❌ প্রোডাক্ট যোগ করতে সমস্যা হয়েছে।'); console.error(error); return; }
+    showToast('✅ প্রোডাক্ট সফলভাবে যোগ হয়েছে!');
+  }
+
   await loadProducts();
   renderCategories();
   renderProducts('সব');
   renderAdminList();
-  showToast('✅ প্রোডাক্ট সফলভাবে যোগ হয়েছে!');
-  document.getElementById('pName').value='';
-  document.getElementById('pPrice').value='';
-  document.getElementById('pUnit').value='';
-  document.getElementById('pDesc').value='';
-  uploadedImgData = null;
-  document.getElementById('imgPreviewWrap').innerHTML = '📷 <br>ছবি আপলোড করতে ক্লিক করুন';
+  resetForm();
 });
 
 function renderAdminList(){
@@ -1131,12 +1178,19 @@ function renderAdminList(){
     <div class="admin-row">
       <div class="thumb">${p.img?`<img src="${p.img}">`:p.emoji||'🌿'}</div>
       <div class="info">
-        <div class="nm">${p.name}</div>
+        <div class="nm">${p.name} ${p.isNew?'<span style="color:var(--leaf); font-size:11px;">● নতুন</span>':''}</div>
         <div class="meta">${p.cat} • ৳${p.price} / ${p.unit}</div>
       </div>
+      <button class="edit-btn" data-edit="${p.id}" style="margin-right:6px;">✏️</button>
       <button class="del-btn" data-del="${p.id}">🗑️</button>
     </div>
   `).join('');
+  list.querySelectorAll('[data-edit]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const p = PRODUCTS.find(x=>x.id===btn.dataset.edit);
+      if(p) startEdit(p);
+    });
+  });
   list.querySelectorAll('[data-del]').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
       const { error } = await sb.from('products').delete().eq('id', btn.dataset.del);
