@@ -757,6 +757,7 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
 const SUPABASE_URL = 'https://drlwbymxnueulytlprsy.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_ux7e-MKhDXWoQORGnuneyQ_eUyCxUF8';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const ADMIN_EMAIL = 'jonyhossain623@gmail.com';
 
 /* ================= STATE ================= */
 let PRODUCTS = [];
@@ -831,12 +832,22 @@ async function loadProducts(){
   if(error){ console.error(error); showToast('⚠️ প্রোডাক্ট লোড করতে সমস্যা হয়েছে।'); PRODUCTS = DEFAULT_PRODUCTS; return; }
   PRODUCTS = data.map(p=>({id:p.id, name:p.name, cat:p.cat, price:p.price, unit:p.unit, desc:p.desc_text, emoji:p.emoji, img:p.img, isNew:p.is_new}));
 }
+async function updateLoginBtnUI(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(session && session.user){
+    const label = (session.user.user_metadata && session.user.user_metadata.full_name)
+      ? session.user.user_metadata.full_name.split(' ')[0]
+      : session.user.email.split('@')[0];
+    document.querySelector('#loginBtn .txt').textContent = label;
+  }
+}
 async function init(){
   await loadProducts();
   renderCategories();
   renderProducts('সব');
   renderAdminList();
   checkAdminSession();
+  updateLoginBtnUI();
 }
 init();
 
@@ -986,7 +997,16 @@ function showToast(msg){
 }
 
 /* ================= AUTH MODAL ================= */
-document.getElementById('loginBtn').addEventListener('click', ()=>document.getElementById('authOverlay').classList.add('show'));
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  const { data: { session } } = await sb.auth.getSession();
+  if(session && session.user && session.user.email !== ADMIN_EMAIL){
+    await sb.auth.signOut();
+    showToast('লগআউট হয়েছে।');
+    setTimeout(()=>location.reload(), 800);
+    return;
+  }
+  document.getElementById('authOverlay').classList.add('show');
+});
 document.getElementById('ctaSignup').addEventListener('click', ()=>{
   document.getElementById('authOverlay').classList.add('show');
   switchAuthTab('signup');
@@ -1011,13 +1031,13 @@ document.getElementById('signupForm').addEventListener('submit', (e)=>{
   document.getElementById('authOverlay').classList.remove('show');
   showToast('অ্যাকাউন্ট তৈরি হয়েছে! MoshlaMart পরিবারে স্বাগতম। 🎉');
 });
-document.getElementById('googleLoginBtn').addEventListener('click', ()=>{
-  document.getElementById('authOverlay').classList.remove('show');
-  showToast('Gmail দিয়ে লগইন সম্পন্ন (ডেমো)। 🎉');
+document.getElementById('googleLoginBtn').addEventListener('click', async ()=>{
+  const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } });
+  if(error){ showToast('❌ Google লগইন শুরু করতে সমস্যা হয়েছে।'); console.error(error); }
 });
-document.getElementById('googleSignupBtn').addEventListener('click', ()=>{
-  document.getElementById('authOverlay').classList.remove('show');
-  showToast('Gmail দিয়ে অ্যাকাউন্ট তৈরি সম্পন্ন (ডেমো)। 🎉');
+document.getElementById('googleSignupBtn').addEventListener('click', async ()=>{
+  const { error } = await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } });
+  if(error){ showToast('❌ Google দিয়ে সাইন আপ শুরু করতে সমস্যা হয়েছে।'); console.error(error); }
 });
 
 /* ================= MOBILE MENU ================= */
@@ -1059,7 +1079,7 @@ document.getElementById('footerAdminLink').addEventListener('click', (e)=>{ e.pr
 document.getElementById('adminCloseBtn').addEventListener('click', ()=>document.getElementById('adminPanel').classList.remove('show'));
 async function checkAdminSession(){
   const { data: { session } } = await sb.auth.getSession();
-  if(session){
+  if(session && session.user && session.user.email === ADMIN_EMAIL){
     document.getElementById('adminGate').style.display='none';
     document.getElementById('adminContent').style.display='grid';
     document.getElementById('adminLogoutBtn').style.display='inline-flex';
@@ -1069,9 +1089,14 @@ document.getElementById('adminGateBtn').addEventListener('click', async ()=>{
   const email = document.getElementById('adminEmailInput').value.trim();
   const val = document.getElementById('adminPassInput').value;
   if(!email || !val){ showToast('⚠️ ইমেইল ও পাসওয়ার্ড দিন।'); return; }
-  const { error } = await sb.auth.signInWithPassword({ email, password: val });
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: val });
   if(error){
     showToast('❌ ভুল ইমেইল বা পাসওয়ার্ড।');
+    return;
+  }
+  if(data.user.email !== ADMIN_EMAIL){
+    await sb.auth.signOut();
+    showToast('❌ এই একাউন্টের admin অনুমতি নেই।');
     return;
   }
   document.getElementById('adminGate').style.display='none';
