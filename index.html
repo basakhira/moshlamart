@@ -252,7 +252,7 @@ nav.main-nav a:hover::after{width:100%;}
 
 /* ---------- Footer ---------- */
 footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
-.footer-grid{display:grid; grid-template-columns:1.6fr 0.8fr 0.8fr 1fr 1fr; gap:30px; max-width:1200px; margin:0 auto;}
+.footer-grid{display:grid; grid-template-columns:2fr 1fr 1fr 1.2fr; gap:36px; max-width:1200px; margin:0 auto;}
 .footer-grid h4{color:#fff; font-family:'Fraunces', serif; font-size:16px; margin-bottom:16px;}
 .footer-grid ul{list-style:none;}
 .footer-grid li{margin-bottom:10px; font-size:14px;}
@@ -419,7 +419,7 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
   .hero-grid{grid-template-columns:1fr;}
   .scene{height:320px;}
   .why-grid{grid-template-columns:1fr;}
-  .footer-grid{grid-template-columns:1fr 1fr 1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
   nav.main-nav{display:none;}
   .hamburger{display:flex;}
   .admin-wrap{grid-template-columns:1fr;}
@@ -594,9 +594,6 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
       <ul>
         <li><a href="#why">আমাদের সম্পর্কে</a></li>
         <li><a href="#contact">যোগাযোগ</a></li>
-        <li><a href="#" data-policy="terms">শর্তাবলী</a></li>
-        <li><a href="#" data-policy="privacy">গোপনীয়তা নীতি</a></li>
-        <li><a href="#" data-policy="refund">রিটার্ন ও রিফান্ড নীতি</a></li>
         <li><a href="#" id="footerAdminLink">অ্যাডমিন</a></li>
       </ul>
     </div>
@@ -608,16 +605,9 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
         <li>📍 ঢাকা, বাংলাদেশ</li>
       </ul>
     </div>
-    <div>
-      <h4>ব্যবসায়িক তথ্য</h4>
-      <ul>
-        <li>Trade License: 00156/1</li>
-        <li>eTIN: 293215791327</li>
-      </ul>
-    </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 MoshlaMart. সর্বস্বত্ব সংরক্ষিত। | Trade License: 00156/1 | eTIN: 293215791327</span>
+    <span>© 2026 MoshlaMart. সর্বস্বত্ব সংরক্ষিত।</span>
     <span>Made with 🌶️ in Bangladesh</span>
   </div>
 </footer>
@@ -687,21 +677,32 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
   <div class="drawer-body" id="cartBody"></div>
   <div class="drawer-foot" id="cartFoot" style="display:none;">
     <div class="subtotal-row"><span>সাবটোটাল</span><span id="cartSubtotal">৳0</span></div>
-    <label style="display:flex; align-items:flex-start; gap:8px; font-size:12px; color:#6b5645; margin-bottom:14px; cursor:pointer;">
-      <input type="checkbox" id="termsCheckbox" style="margin-top:2px;">
-      <span>আমি <a href="#" data-policy="terms" style="color:var(--chili); font-weight:700;">শর্তাবলী</a>, <a href="#" data-policy="privacy" style="color:var(--chili); font-weight:700;">গোপনীয়তা নীতি</a> ও <a href="#" data-policy="refund" style="color:var(--chili); font-weight:700;">রিটার্ন/রিফান্ড নীতি</a> পড়েছি ও সম্মত আছি।</span>
-    </label>
     <button class="btn btn-primary" style="width:100%; justify-content:center;" id="checkoutBtn">চেকআউট করুন</button>
   </div>
 </div>
 
-<!-- Policy Modal -->
-<div class="overlay" id="policyOverlay">
-  <div class="modal-box" style="max-width:640px; text-align:left;">
-    <button class="modal-close" id="policyClose">✕</button>
-    <div style="padding:32px;">
-      <h2 id="policyTitle" style="font-family:'Fraunces', serif; color:var(--brown); font-size:24px; margin-bottom:16px;"></h2>
-      <div id="policyBody" style="font-size:14px; line-height:1.8; color:#5a4a3d; max-height:55vh; overflow-y:auto;"></div>
+<!-- Checkout Modal -->
+<div class="overlay" id="checkoutOverlay">
+  <div class="modal-box" style="max-width:460px;">
+    <button class="modal-close" id="checkoutCloseBtn">✕</button>
+    <div style="padding:26px;">
+      <h3 style="font-family:'Fraunces',serif; color:var(--brown); margin-bottom:6px;">🧾 অর্ডার সম্পন্ন করুন</h3>
+      <p style="font-size:13px; color:var(--brown-soft); margin-bottom:18px;">সাবটোটাল: <strong id="checkoutSubtotal">৳0</strong></p>
+      <div class="field"><label>আপনার নাম</label><input type="text" id="coName" placeholder="পুরো নাম লিখুন"></div>
+      <div class="field"><label>ফোন নাম্বার</label><input type="tel" id="coPhone" placeholder="01XXXXXXXXX"></div>
+      <div class="field"><label>সম্পূর্ণ ঠিকানা</label><textarea id="coAddress" rows="3" placeholder="বাসা/রোড/থানা/জেলা"></textarea></div>
+      <div class="field"><label>অতিরিক্ত নোট (ঐচ্ছিক)</label><textarea id="coNotes" rows="2" placeholder="বিশেষ কোনো নির্দেশনা থাকলে লিখুন"></textarea></div>
+      <div class="field">
+        <label>পেমেন্ট পদ্ধতি</label>
+        <div style="display:flex; align-items:center; gap:10px; background:#fff; border:1.5px solid var(--leaf); border-radius:12px; padding:13px;">
+          <span style="font-size:20px;">💵</span>
+          <div>
+            <div style="font-weight:700; color:var(--brown);">ক্যাশ অন ডেলিভারি</div>
+            <div style="font-size:12px; color:var(--brown-soft);">পণ্য হাতে পেয়ে টাকা পরিশোধ করুন</div>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:6px;" id="placeOrderBtn">অর্ডার কনফার্ম করুন</button>
     </div>
   </div>
 </div>
@@ -738,6 +739,10 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
     <input type="password" id="adminPassInput" placeholder="পাসওয়ার্ড দিন">
     <button class="btn btn-primary" style="width:100%; justify-content:center;" id="adminGateBtn">প্রবেশ করুন</button>
   </div>
+  <div class="admin-tabs" id="adminTabs" style="display:none; gap:10px; padding:16px 24px 0;">
+    <button class="btn btn-primary" id="tabProductsBtn">📦 প্রোডাক্ট</button>
+    <button class="btn btn-outline" id="tabOrdersBtn">🧾 অর্ডার (<span id="orderCount">0</span>)</button>
+  </div>
   <div class="admin-wrap" id="adminContent" style="display:none;">
     <div class="admin-form">
       <h3 id="formTitle">➕ নতুন প্রোডাক্ট যোগ করুন</h3>
@@ -771,6 +776,10 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
       <h3 style="font-family:'Fraunces',serif; color:var(--brown); margin-bottom:16px;">📦 সব প্রোডাক্ট (<span id="adminCount">0</span>)</h3>
       <div class="admin-list" id="adminList"></div>
     </div>
+  </div>
+  <div id="ordersPanel" style="display:none; padding:0 24px 24px;">
+    <h3 style="font-family:'Fraunces',serif; color:var(--brown); margin-bottom:16px;">🧾 সব অর্ডার</h3>
+    <div id="ordersList"></div>
   </div>
 </div>
 
@@ -857,23 +866,12 @@ async function loadProducts(){
   if(error){ console.error(error); showToast('⚠️ প্রোডাক্ট লোড করতে সমস্যা হয়েছে।'); PRODUCTS = DEFAULT_PRODUCTS; return; }
   PRODUCTS = data.map(p=>({id:p.id, name:p.name, cat:p.cat, price:p.price, unit:p.unit, desc:p.desc_text, emoji:p.emoji, img:p.img, isNew:p.is_new}));
 }
-async function updateLoginBtnUI(){
-  const { data: { session } } = await sb.auth.getSession();
-  if(session && session.user){
-    const label = (session.user.user_metadata && session.user.user_metadata.full_name)
-      ? session.user.user_metadata.full_name.split(' ')[0]
-      : session.user.email.split('@')[0];
-    document.querySelector('#loginBtn .txt').textContent = label;
-  }
-  // If there's no session, the button keeps its default "লগইন / সাইনআপ" label.
-}
 async function init(){
   await loadProducts();
   renderCategories();
   renderProducts('সব');
   renderAdminList();
   checkAdminSession();
-  updateLoginBtnUI();
 }
 init();
 
@@ -1009,60 +1007,52 @@ function renderCart(){
 document.getElementById('cartBtn').addEventListener('click', ()=>document.getElementById('cartDrawer').classList.add('show'));
 document.getElementById('cartClose').addEventListener('click', ()=>document.getElementById('cartDrawer').classList.remove('show'));
 document.getElementById('checkoutBtn').addEventListener('click', ()=>{
-  const agreed = document.getElementById('termsCheckbox').checked;
-  if(!agreed){
-    showToast('⚠️ চেকআউটের আগে শর্তাবলী ও নীতিমালায় সম্মতি দিন।');
-    return;
-  }
-  showToast('🚧 চেকআউট সিস্টেমের জন্য পেমেন্ট গেটওয়ে (bKash/Nagad/Card) যুক্ত করতে হবে।');
+  const subtotalText = document.getElementById('cartSubtotal').textContent;
+  document.getElementById('checkoutSubtotal').textContent = subtotalText;
+  document.getElementById('cartDrawer').classList.remove('show');
+  document.getElementById('checkoutOverlay').classList.add('show');
 });
+document.getElementById('checkoutCloseBtn').addEventListener('click', ()=>document.getElementById('checkoutOverlay').classList.remove('show'));
+document.getElementById('checkoutOverlay').addEventListener('click', (e)=>{ if(e.target.id==='checkoutOverlay') e.currentTarget.classList.remove('show'); });
 
-/* ================= POLICY MODAL ================= */
-const POLICIES = {
-  terms: {
-    title: 'শর্তাবলী (Terms & Conditions)',
-    body: `
-      <p>MoshlaMart-এ স্বাগতম। এই ওয়েবসাইট ব্যবহার করে আপনি নিচের শর্তাবলীতে সম্মত হচ্ছেন:</p>
-      <p><strong>১. অর্ডার:</strong> ওয়েবসাইটের মাধ্যমে দেওয়া প্রতিটি অর্ডার একটি ক্রয়ের প্রস্তাব হিসেবে গণ্য হবে, যা MoshlaMart কর্তৃক নিশ্চিত হওয়ার পর কার্যকর হবে।</p>
-      <p><strong>২. মূল্য:</strong> সকল পণ্যের মূল্য বাংলাদেশি টাকায় (৳) প্রদর্শিত এবং তা পূর্ব-ঘোষণা ছাড়াই পরিবর্তনযোগ্য।</p>
-      <p><strong>৩. পেমেন্ট:</strong> bKash, Nagad, কার্ড ও ক্যাশ অন ডেলিভারির মাধ্যমে পেমেন্ট গ্রহণ করা হয়।</p>
-      <p><strong>৪. ব্যবসায়িক তথ্য:</strong> Trade License: 00156/1 | eTIN: 293215791327</p>
-      <p><strong>৫. দায়বদ্ধতা:</strong> পণ্যের গুণগত মান বজায় রাখতে আমরা প্রতিশ্রুতিবদ্ধ, তবে অনিয়ন্ত্রিত পরিস্থিতিতে (প্রাকৃতিক দুর্যোগ, পরিবহন জটিলতা) সৃষ্ট বিলম্বের জন্য দায়ী থাকব না।</p>
-    `
-  },
-  privacy: {
-    title: 'গোপনীয়তা নীতি (Privacy Policy)',
-    body: `
-      <p>আপনার ব্যক্তিগত তথ্যের গোপনীয়তা আমাদের কাছে গুরুত্বপূর্ণ।</p>
-      <p><strong>১. তথ্য সংগ্রহ:</strong> অর্ডার প্রক্রিয়াকরণের জন্য আমরা আপনার নাম, ফোন নম্বর, ঠিকানা ও ইমেইল সংগ্রহ করি।</p>
-      <p><strong>২. তথ্যের ব্যবহার:</strong> সংগৃহীত তথ্য শুধুমাত্র অর্ডার ডেলিভারি, গ্রাহক সেবা ও প্রয়োজনীয় যোগাযোগের জন্য ব্যবহৃত হয়।</p>
-      <p><strong>৩. তথ্য শেয়ার:</strong> আপনার তথ্য কোনো তৃতীয় পক্ষের কাছে বিক্রি বা শেয়ার করা হয় না, ডেলিভারি পার্টনার ও পেমেন্ট গেটওয়ে ছাড়া।</p>
-      <p><strong>৪. নিরাপত্তা:</strong> আপনার তথ্য সুরক্ষিত রাখতে আমরা যথাযথ প্রযুক্তিগত ব্যবস্থা গ্রহণ করি।</p>
-      <p>কোনো প্রশ্ন থাকলে যোগাযোগ করুন: info.hirabasak@gmail.com</p>
-    `
-  },
-  refund: {
-    title: 'রিটার্ন ও রিফান্ড নীতি',
-    body: `
-      <p><strong>১. রিটার্নের শর্ত:</strong> পণ্য হাতে পাওয়ার ২৪ ঘণ্টার মধ্যে ভাঙা, নষ্ট বা ভুল পণ্য পেলে তা রিটার্নযোগ্য।</p>
-      <p><strong>২. রিটার্ন প্রক্রিয়া:</strong> রিটার্নের জন্য আমাদের লাইভ চ্যাট বা ফোনে (📞 +৮৮০ ১৬৭১-৫৬০৭৩৫) যোগাযোগ করুন এবং পণ্যের ছবি/ভিডিও প্রমাণসহ পাঠান।</p>
-      <p><strong>৩. রিফান্ড:</strong> রিটার্ন অনুমোদনের পর ৩-৭ কার্যদিবসের মধ্যে আপনার পেমেন্ট মাধ্যমে (bKash/Nagad/ব্যাংক) রিফান্ড করা হবে।</p>
-      <p><strong>৪. ব্যতিক্রম:</strong> খোলা/ব্যবহৃত মসলার প্যাকেট, এবং গ্রাহকের ভুলে দেওয়া ঠিকানার কারণে ডেলিভারি ব্যর্থ হলে রিটার্ন প্রযোজ্য নয়।</p>
-    `
-  }
-};
-function openPolicy(key){
-  const p = POLICIES[key];
-  if(!p) return;
-  document.getElementById('policyTitle').textContent = p.title;
-  document.getElementById('policyBody').innerHTML = p.body;
-  document.getElementById('policyOverlay').classList.add('show');
-}
-document.querySelectorAll('[data-policy]').forEach(a=>{
-  a.addEventListener('click', (e)=>{ e.preventDefault(); openPolicy(a.dataset.policy); });
+document.getElementById('placeOrderBtn').addEventListener('click', async ()=>{
+  const name = document.getElementById('coName').value.trim();
+  const phone = document.getElementById('coPhone').value.trim();
+  const address = document.getElementById('coAddress').value.trim();
+  const notes = document.getElementById('coNotes').value.trim();
+  if(!name || !phone || !address){ showToast('⚠️ নাম, ফোন ও ঠিকানা দিতে হবে।'); return; }
+  if(CART.length===0){ showToast('⚠️ কার্ট খালি।'); return; }
+
+  let total = 0;
+  const items = CART.map(c=>{
+    const p = PRODUCTS.find(x=>x.id===c.id);
+    const lineTotal = p ? p.price * c.qty : 0;
+    total += lineTotal;
+    return { id: c.id, name: p?p.name:'', price: p?p.price:0, qty: c.qty };
+  });
+
+  const order = {
+    id: 'ord'+Date.now(),
+    customer_name: name,
+    phone, address, notes,
+    items,
+    total,
+    payment_method: 'cash_on_delivery',
+    status: 'pending'
+  };
+
+  const { error } = await sb.from('orders').insert(order);
+  if(error){ showToast('❌ অর্ডার সাবমিট করতে সমস্যা হয়েছে।'); console.error(error); return; }
+
+  CART = [];
+  renderCart();
+  document.getElementById('checkoutOverlay').classList.remove('show');
+  document.getElementById('coName').value='';
+  document.getElementById('coPhone').value='';
+  document.getElementById('coAddress').value='';
+  document.getElementById('coNotes').value='';
+  showToast('✅ আপনার অর্ডার সফলভাবে গ্রহণ করা হয়েছে! আমরা শীঘ্রই যোগাযোগ করব।');
 });
-document.getElementById('policyClose').addEventListener('click', ()=>document.getElementById('policyOverlay').classList.remove('show'));
-document.getElementById('policyOverlay').addEventListener('click', (e)=>{ if(e.target.id==='policyOverlay') e.currentTarget.classList.remove('show'); });
 
 /* ================= TOAST ================= */
 let toastTimer;
@@ -1161,6 +1151,8 @@ async function checkAdminSession(){
     document.getElementById('adminGate').style.display='none';
     document.getElementById('adminContent').style.display='grid';
     document.getElementById('adminLogoutBtn').style.display='inline-flex';
+    document.getElementById('adminTabs').style.display='flex';
+    loadOrders();
   }
 }
 document.getElementById('adminGateBtn').addEventListener('click', async ()=>{
@@ -1180,12 +1172,76 @@ document.getElementById('adminGateBtn').addEventListener('click', async ()=>{
   document.getElementById('adminGate').style.display='none';
   document.getElementById('adminContent').style.display='grid';
   document.getElementById('adminLogoutBtn').style.display='inline-flex';
+  document.getElementById('adminTabs').style.display='flex';
+  loadOrders();
   showToast('✅ লগইন সফল হয়েছে!');
 });
+
+document.getElementById('tabProductsBtn').addEventListener('click', ()=>{
+  document.getElementById('adminContent').style.display='grid';
+  document.getElementById('ordersPanel').style.display='none';
+  document.getElementById('tabProductsBtn').className='btn btn-primary';
+  document.getElementById('tabOrdersBtn').className='btn btn-outline';
+});
+document.getElementById('tabOrdersBtn').addEventListener('click', ()=>{
+  document.getElementById('adminContent').style.display='none';
+  document.getElementById('ordersPanel').style.display='block';
+  document.getElementById('tabOrdersBtn').className='btn btn-primary';
+  document.getElementById('tabProductsBtn').className='btn btn-outline';
+  loadOrders();
+});
+
+async function loadOrders(){
+  const { data, error } = await sb.from('orders').select('*').order('created_at', {ascending:false});
+  if(error){ console.error(error); return; }
+  document.getElementById('orderCount').textContent = data.length;
+  const list = document.getElementById('ordersList');
+  if(data.length===0){
+    list.innerHTML = `<div class="empty-note">এখনো কোনো অর্ডার আসেনি।</div>`;
+    return;
+  }
+  const statusLabel = { pending:'⏳ পেন্ডিং', confirmed:'✅ কনফার্ম হয়েছে', delivered:'📦 ডেলিভারি হয়েছে', cancelled:'❌ বাতিল' };
+  list.innerHTML = data.map(o=>`
+    <div class="admin-row" style="flex-direction:column; align-items:stretch; gap:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div class="nm">${o.customer_name} • ${o.phone}</div>
+          <div class="meta">${o.address}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-weight:700; color:var(--chili);">৳${o.total}</div>
+          <div style="font-size:12px; color:var(--brown-soft);">${new Date(o.created_at).toLocaleString('bn-BD')}</div>
+        </div>
+      </div>
+      <div style="font-size:13px; color:var(--brown-soft);">
+        ${o.items.map(it=>`${it.name} x${it.qty}`).join(', ')}
+      </div>
+      ${o.notes ? `<div style="font-size:13px; color:var(--brown-soft);">📝 ${o.notes}</div>` : ''}
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:12px; background:var(--cream-dark); padding:4px 10px; border-radius:10px;">💵 ক্যাশ অন ডেলিভারি</span>
+        <select data-order-status="${o.id}" style="padding:6px 10px; border-radius:8px; border:1px solid #e4d8c8;">
+          <option value="pending" ${o.status==='pending'?'selected':''}>${statusLabel.pending}</option>
+          <option value="confirmed" ${o.status==='confirmed'?'selected':''}>${statusLabel.confirmed}</option>
+          <option value="delivered" ${o.status==='delivered'?'selected':''}>${statusLabel.delivered}</option>
+          <option value="cancelled" ${o.status==='cancelled'?'selected':''}>${statusLabel.cancelled}</option>
+        </select>
+      </div>
+    </div>
+  `).join('');
+  list.querySelectorAll('[data-order-status]').forEach(sel=>{
+    sel.addEventListener('change', async ()=>{
+      const { error } = await sb.from('orders').update({ status: sel.value }).eq('id', sel.dataset.orderStatus);
+      if(error){ showToast('❌ স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে।'); console.error(error); return; }
+      showToast('স্ট্যাটাস আপডেট হয়েছে।');
+    });
+  });
+}
 document.getElementById('adminLogoutBtn').addEventListener('click', async ()=>{
   await sb.auth.signOut();
   document.getElementById('adminGate').style.display='block';
   document.getElementById('adminContent').style.display='none';
+  document.getElementById('ordersPanel').style.display='none';
+  document.getElementById('adminTabs').style.display='none';
   document.getElementById('adminLogoutBtn').style.display='none';
   document.getElementById('adminEmailInput').value='';
   document.getElementById('adminPassInput').value='';
