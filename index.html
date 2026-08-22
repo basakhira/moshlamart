@@ -252,7 +252,7 @@ nav.main-nav a:hover::after{width:100%;}
 
 /* ---------- Footer ---------- */
 footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
-.footer-grid{display:grid; grid-template-columns:2fr 1fr 1fr 1.2fr; gap:36px; max-width:1200px; margin:0 auto;}
+.footer-grid{display:grid; grid-template-columns:1.6fr 0.8fr 0.8fr 1fr 1fr; gap:30px; max-width:1200px; margin:0 auto;}
 .footer-grid h4{color:#fff; font-family:'Fraunces', serif; font-size:16px; margin-bottom:16px;}
 .footer-grid ul{list-style:none;}
 .footer-grid li{margin-bottom:10px; font-size:14px;}
@@ -419,7 +419,7 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
   .hero-grid{grid-template-columns:1fr;}
   .scene{height:320px;}
   .why-grid{grid-template-columns:1fr;}
-  .footer-grid{grid-template-columns:1fr 1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr 1fr;}
   nav.main-nav{display:none;}
   .hamburger{display:flex;}
   .admin-wrap{grid-template-columns:1fr;}
@@ -594,6 +594,9 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
       <ul>
         <li><a href="#why">আমাদের সম্পর্কে</a></li>
         <li><a href="#contact">যোগাযোগ</a></li>
+        <li><a href="#" data-policy="terms">শর্তাবলী</a></li>
+        <li><a href="#" data-policy="privacy">গোপনীয়তা নীতি</a></li>
+        <li><a href="#" data-policy="refund">রিটার্ন ও রিফান্ড নীতি</a></li>
         <li><a href="#" id="footerAdminLink">অ্যাডমিন</a></li>
       </ul>
     </div>
@@ -605,9 +608,16 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
         <li>📍 ঢাকা, বাংলাদেশ</li>
       </ul>
     </div>
+    <div>
+      <h4>ব্যবসায়িক তথ্য</h4>
+      <ul>
+        <li>Trade License: 00156/1</li>
+        <li>eTIN: 293215791327</li>
+      </ul>
+    </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 MoshlaMart. সর্বস্বত্ব সংরক্ষিত।</span>
+    <span>© 2026 MoshlaMart. সর্বস্বত্ব সংরক্ষিত। | Trade License: 00156/1 | eTIN: 293215791327</span>
     <span>Made with 🌶️ in Bangladesh</span>
   </div>
 </footer>
@@ -677,7 +687,22 @@ footer{background:#2A170E; color:#d8c8b8; padding:60px 24px 24px;}
   <div class="drawer-body" id="cartBody"></div>
   <div class="drawer-foot" id="cartFoot" style="display:none;">
     <div class="subtotal-row"><span>সাবটোটাল</span><span id="cartSubtotal">৳0</span></div>
+    <label style="display:flex; align-items:flex-start; gap:8px; font-size:12px; color:#6b5645; margin-bottom:14px; cursor:pointer;">
+      <input type="checkbox" id="termsCheckbox" style="margin-top:2px;">
+      <span>আমি <a href="#" data-policy="terms" style="color:var(--chili); font-weight:700;">শর্তাবলী</a>, <a href="#" data-policy="privacy" style="color:var(--chili); font-weight:700;">গোপনীয়তা নীতি</a> ও <a href="#" data-policy="refund" style="color:var(--chili); font-weight:700;">রিটার্ন/রিফান্ড নীতি</a> পড়েছি ও সম্মত আছি।</span>
+    </label>
     <button class="btn btn-primary" style="width:100%; justify-content:center;" id="checkoutBtn">চেকআউট করুন</button>
+  </div>
+</div>
+
+<!-- Policy Modal -->
+<div class="overlay" id="policyOverlay">
+  <div class="modal-box" style="max-width:640px; text-align:left;">
+    <button class="modal-close" id="policyClose">✕</button>
+    <div style="padding:32px;">
+      <h2 id="policyTitle" style="font-family:'Fraunces', serif; color:var(--brown); font-size:24px; margin-bottom:16px;"></h2>
+      <div id="policyBody" style="font-size:14px; line-height:1.8; color:#5a4a3d; max-height:55vh; overflow-y:auto;"></div>
+    </div>
   </div>
 </div>
 
@@ -984,8 +1009,60 @@ function renderCart(){
 document.getElementById('cartBtn').addEventListener('click', ()=>document.getElementById('cartDrawer').classList.add('show'));
 document.getElementById('cartClose').addEventListener('click', ()=>document.getElementById('cartDrawer').classList.remove('show'));
 document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+  const agreed = document.getElementById('termsCheckbox').checked;
+  if(!agreed){
+    showToast('⚠️ চেকআউটের আগে শর্তাবলী ও নীতিমালায় সম্মতি দিন।');
+    return;
+  }
   showToast('🚧 চেকআউট সিস্টেমের জন্য পেমেন্ট গেটওয়ে (bKash/Nagad/Card) যুক্ত করতে হবে।');
 });
+
+/* ================= POLICY MODAL ================= */
+const POLICIES = {
+  terms: {
+    title: 'শর্তাবলী (Terms & Conditions)',
+    body: `
+      <p>MoshlaMart-এ স্বাগতম। এই ওয়েবসাইট ব্যবহার করে আপনি নিচের শর্তাবলীতে সম্মত হচ্ছেন:</p>
+      <p><strong>১. অর্ডার:</strong> ওয়েবসাইটের মাধ্যমে দেওয়া প্রতিটি অর্ডার একটি ক্রয়ের প্রস্তাব হিসেবে গণ্য হবে, যা MoshlaMart কর্তৃক নিশ্চিত হওয়ার পর কার্যকর হবে।</p>
+      <p><strong>২. মূল্য:</strong> সকল পণ্যের মূল্য বাংলাদেশি টাকায় (৳) প্রদর্শিত এবং তা পূর্ব-ঘোষণা ছাড়াই পরিবর্তনযোগ্য।</p>
+      <p><strong>৩. পেমেন্ট:</strong> bKash, Nagad, কার্ড ও ক্যাশ অন ডেলিভারির মাধ্যমে পেমেন্ট গ্রহণ করা হয়।</p>
+      <p><strong>৪. ব্যবসায়িক তথ্য:</strong> Trade License: 00156/1 | eTIN: 293215791327</p>
+      <p><strong>৫. দায়বদ্ধতা:</strong> পণ্যের গুণগত মান বজায় রাখতে আমরা প্রতিশ্রুতিবদ্ধ, তবে অনিয়ন্ত্রিত পরিস্থিতিতে (প্রাকৃতিক দুর্যোগ, পরিবহন জটিলতা) সৃষ্ট বিলম্বের জন্য দায়ী থাকব না।</p>
+    `
+  },
+  privacy: {
+    title: 'গোপনীয়তা নীতি (Privacy Policy)',
+    body: `
+      <p>আপনার ব্যক্তিগত তথ্যের গোপনীয়তা আমাদের কাছে গুরুত্বপূর্ণ।</p>
+      <p><strong>১. তথ্য সংগ্রহ:</strong> অর্ডার প্রক্রিয়াকরণের জন্য আমরা আপনার নাম, ফোন নম্বর, ঠিকানা ও ইমেইল সংগ্রহ করি।</p>
+      <p><strong>২. তথ্যের ব্যবহার:</strong> সংগৃহীত তথ্য শুধুমাত্র অর্ডার ডেলিভারি, গ্রাহক সেবা ও প্রয়োজনীয় যোগাযোগের জন্য ব্যবহৃত হয়।</p>
+      <p><strong>৩. তথ্য শেয়ার:</strong> আপনার তথ্য কোনো তৃতীয় পক্ষের কাছে বিক্রি বা শেয়ার করা হয় না, ডেলিভারি পার্টনার ও পেমেন্ট গেটওয়ে ছাড়া।</p>
+      <p><strong>৪. নিরাপত্তা:</strong> আপনার তথ্য সুরক্ষিত রাখতে আমরা যথাযথ প্রযুক্তিগত ব্যবস্থা গ্রহণ করি।</p>
+      <p>কোনো প্রশ্ন থাকলে যোগাযোগ করুন: info.hirabasak@gmail.com</p>
+    `
+  },
+  refund: {
+    title: 'রিটার্ন ও রিফান্ড নীতি',
+    body: `
+      <p><strong>১. রিটার্নের শর্ত:</strong> পণ্য হাতে পাওয়ার ২৪ ঘণ্টার মধ্যে ভাঙা, নষ্ট বা ভুল পণ্য পেলে তা রিটার্নযোগ্য।</p>
+      <p><strong>২. রিটার্ন প্রক্রিয়া:</strong> রিটার্নের জন্য আমাদের লাইভ চ্যাট বা ফোনে (📞 +৮৮০ ১৬৭১-৫৬০৭৩৫) যোগাযোগ করুন এবং পণ্যের ছবি/ভিডিও প্রমাণসহ পাঠান।</p>
+      <p><strong>৩. রিফান্ড:</strong> রিটার্ন অনুমোদনের পর ৩-৭ কার্যদিবসের মধ্যে আপনার পেমেন্ট মাধ্যমে (bKash/Nagad/ব্যাংক) রিফান্ড করা হবে।</p>
+      <p><strong>৪. ব্যতিক্রম:</strong> খোলা/ব্যবহৃত মসলার প্যাকেট, এবং গ্রাহকের ভুলে দেওয়া ঠিকানার কারণে ডেলিভারি ব্যর্থ হলে রিটার্ন প্রযোজ্য নয়।</p>
+    `
+  }
+};
+function openPolicy(key){
+  const p = POLICIES[key];
+  if(!p) return;
+  document.getElementById('policyTitle').textContent = p.title;
+  document.getElementById('policyBody').innerHTML = p.body;
+  document.getElementById('policyOverlay').classList.add('show');
+}
+document.querySelectorAll('[data-policy]').forEach(a=>{
+  a.addEventListener('click', (e)=>{ e.preventDefault(); openPolicy(a.dataset.policy); });
+});
+document.getElementById('policyClose').addEventListener('click', ()=>document.getElementById('policyOverlay').classList.remove('show'));
+document.getElementById('policyOverlay').addEventListener('click', (e)=>{ if(e.target.id==='policyOverlay') e.currentTarget.classList.remove('show'); });
 
 /* ================= TOAST ================= */
 let toastTimer;
